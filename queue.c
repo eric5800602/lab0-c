@@ -12,17 +12,35 @@
 queue_t *q_new()
 {
     queue_t *q = malloc(sizeof(queue_t));
-    /* TODO: What if malloc returned NULL? */
+    /* Return NULL if malloc return NULL. */
+    if (q == NULL) {
+        return NULL;
+    }
+    memset(q, 0, sizeof(queue_t));
     q->head = NULL;
+    q->tail = NULL;
+    /* Initial the size of queue to zero. */
+    q->size = 0;
     return q;
 }
 
 /* Free all storage used by queue */
 void q_free(queue_t *q)
 {
-    /* TODO: How about freeing the list elements and the strings? */
     /* Free queue structure */
+    /* Check whether q is NULL. */
+    if (q == NULL) {
+        return;
+    }
+    /* Free all elements in queue. */
+    while (q->head != NULL) {
+        list_ele_t *tmp = q->head->next;
+        free(q->head->value);
+        free(q->head);
+        q->head = tmp;
+    }
     free(q);
+    return;
 }
 
 /*
@@ -81,9 +99,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
  */
 int q_size(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* Remember: It should operate in O(1) time */
-    if (q && q->size) {
+    if (q != NULL && q->size) {
         return q->size;
     } else {
         return 0;
