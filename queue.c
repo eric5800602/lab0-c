@@ -52,13 +52,40 @@ void q_free(queue_t *q)
  */
 bool q_insert_head(queue_t *q, char *s)
 {
+    /* Check whether q is NULL. */
+    if (q == NULL) {
+        return false;
+    }
     list_ele_t *newh;
-    /* TODO: What should you do if the q is NULL? */
     newh = malloc(sizeof(list_ele_t));
-    /* Don't forget to allocate space for the string and copy it */
-    /* What if either call to malloc returns NULL? */
+    /* Return NULL if malloc return NULL. */
+    if (newh == NULL) {
+        return false;
+    }
+    /* Allocate space for the string. */
+    newh->value = malloc((strlen(s) + 1) * sizeof(char));
+    /* Return NULL if malloc return NULL. */
+    if (newh->value == NULL) {
+        free(newh);
+        return false;
+    }
+    /* Reset the space of string malloc just recently*/
+    memset(newh->value, 0, sizeof(char) * (strlen(s) + 1));
+    strncpy(newh->value, s, strlen(s));
+    if (q->size == 0) {
+        newh->next = NULL;
+        q->head = newh;
+        q->size++;
+        return true;
+    }
     newh->next = q->head;
     q->head = newh;
+    /* If the tail in queue is NULL, assign newh to it. */
+    if (q->tail == NULL) {
+        q->tail = newh;
+    }
+    /* The size of queue plus one. */
+    q->size++;
     return true;
 }
 
@@ -87,9 +114,23 @@ bool q_insert_tail(queue_t *q, char *s)
  */
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
-    /* TODO: You need to fix up this code. */
-    /* TODO: Remove the above comment when you are about to implement. */
+    /* Return false if queue is NULL or empty. */
+    if (q == NULL || q->size == 0) {
+        return false;
+    }
+    /* If sp is non-NULL and an element is removed, copy the removed string to
+     * *sp. */
+    if (sp != NULL && q->head->value) {
+        memset(sp, '\0', bufsize);
+        strncpy(sp, q->head->value, bufsize - 1);
+        printf("%s\n", sp);
+    }
+    list_ele_t *tmp = q->head;
     q->head = q->head->next;
+    /* Free the spaces used by the list element and the string. */
+    free(tmp->value);
+    free(tmp);
+    q->size--;
     return true;
 }
 
