@@ -178,7 +178,7 @@ int q_size(queue_t *q)
 void q_reverse(queue_t *q)
 {
     /* Return if queue is NULL or empty. */
-    if (q == NULL || q->size == 0) {
+    if (q == NULL || q->size == 0 || q->size == 1) {
         return;
     }
     /* Declare back & front pointer for reversing. */
