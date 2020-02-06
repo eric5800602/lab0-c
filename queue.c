@@ -215,4 +215,71 @@ void q_sort(queue_t *q)
 {
     /* TODO: You need to write the code for this function */
     /* TODO: Remove the above comment when you are about to implement. */
+    // merge sort
+    if (q == NULL || q->size == 1) {
+        return;
+    }
+    q->head = mergeSortList(q->head);
+}
+list_ele_t *mergeSortList(list_ele_t *head)
+{
+    // merge sort
+    if (!head || !head->next)
+        return head;
+
+    list_ele_t *fast = head->next;
+    list_ele_t *slow = head;
+
+    // split list
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    fast = slow->next;
+    slow->next = NULL;
+
+    // sort each list
+    list_ele_t *l1 = mergeSortList(head);
+    list_ele_t *l2 = mergeSortList(fast);
+
+    // merge sorted l1 and sorted l2
+    return merge(l1, l2);
+}
+list_ele_t *merge(list_ele_t *l1, list_ele_t *l2)
+{
+    /* Using merge with pseudo node will cause following error
+     * FATAL ERROR: Calls to malloc disallowed
+     * FATAL Error.  Exiting
+     */
+    /* Declare pointer q as result for returning. */
+    list_ele_t *temp = NULL, *q = NULL;
+    /* Initial temp and q pointers for merge starting. */
+    if (strcasecmp(l1->value, l2->value) < 0) {
+        q = l1;
+        temp = q;
+        l1 = l1->next;
+    } else {
+        q = l2;
+        temp = q;
+        l2 = l2->next;
+    }
+    /* Merge two list(l1 & l2) until the end of one. */
+    while (l1 && l2) {
+        if (strcasecmp(l1->value, l2->value) < 0) {
+            temp->next = l1;
+            temp = temp->next;
+            l1 = l1->next;
+        } else {
+            temp->next = l2;
+            temp = temp->next;
+            l2 = l2->next;
+        }
+    }
+    /* Another list may not be over yet. */
+    if (l1)
+        temp->next = l1;
+    if (l2)
+        temp->next = l2;
+
+    return q;
 }
