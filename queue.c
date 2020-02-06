@@ -72,12 +72,6 @@ bool q_insert_head(queue_t *q, char *s)
     /* Reset the space of string malloc just recently*/
     memset(newh->value, 0, sizeof(char) * (strlen(s) + 1));
     strncpy(newh->value, s, strlen(s));
-    if (q->size == 0) {
-        newh->next = NULL;
-        q->head = newh;
-        q->size++;
-        return true;
-    }
     newh->next = q->head;
     q->head = newh;
     /* If the tail in queue is NULL, assign newh to it. */
@@ -109,14 +103,14 @@ bool q_insert_tail(queue_t *q, char *s)
         return false;
     }
     /* Allocate space for the string. */
-    newt->value = malloc((strlen(s) + 1) * sizeof(char));
+    newt->value = malloc(sizeof(char) * (strlen(s) + 1));
     /* Return NULL if malloc return NULL. */
     if (newt->value == NULL) {
         free(newt);
         return false;
     }
     /* Reset the space of string malloc just recently*/
-    memset(newt->value, 0, strlen(s) + 1);
+    memset(newt->value, 0, sizeof(char) * (strlen(s) + 1));
     strncpy(newt->value, s, strlen(s));
     newt->next = NULL;
     if (q->tail != NULL) {
@@ -151,7 +145,6 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     if (sp != NULL && q->head->value) {
         memset(sp, '\0', bufsize);
         strncpy(sp, q->head->value, bufsize - 1);
-        printf("%s\n", sp);
     }
     list_ele_t *tmp = q->head;
     q->head = q->head->next;
@@ -184,8 +177,33 @@ int q_size(queue_t *q)
  */
 void q_reverse(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* TODO: Remove the above comment when you are about to implement. */
+    /* Return if queue is NULL or empty. */
+    if (q == NULL || q->size == 0) {
+        return;
+    }
+    /* Declare back & front pointer for reversing. */
+    list_ele_t *back, *front;
+    /* Reverse elements in queue. */
+    /* Change the tail of queue and record previous pointer in back. */
+    q->tail = q->head;
+    back = q->head;
+    /* Move the head pointer to the next and record next pointer in fornt. */
+    q->head = q->head->next;
+    front = q->head->next;
+    /* Clear the next of tail to NULL*/
+    q->tail->next = NULL;
+    while (front != NULL) {
+        /* Change the next pointer of current head to previous. */
+        q->head->next = back;
+        /* Repeat recording back & front pointer and move the head of q to the
+         * next. */
+        back = q->head;
+        /* Wrong writage: q->head = q->head->next. Because q->head->next had
+         * been changed before. */
+        q->head = front;
+        front = q->head->next;
+    }
+    q->head->next = back;
 }
 
 /*
