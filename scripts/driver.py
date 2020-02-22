@@ -6,7 +6,6 @@ import sys
 import getopt
 
 
-
 # Driver program for C programming exercise
 class Tracer:
 

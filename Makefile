@@ -3,8 +3,8 @@ CFLAGS = -O1 -g -Wall -Werror -Idudect -I.
 
 GIT_HOOKS := .git/hooks/applied
 DUT_DIR := dudect
-all: $(GIT_HOOKS) qtest
 NAT_DIR := natsort
+all: $(GIT_HOOKS) qtest
 # Control the build verbosity
 ifeq ("$(VERBOSE)","1")
     Q :=
