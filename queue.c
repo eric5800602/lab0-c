@@ -36,7 +36,7 @@ void q_free(queue_t *q)
     /* Free all elements in queue. */
     while (q->head != NULL) {
         list_ele_t *tmp = q->head->next;
-        free(q->head->value);
+        // free(q->head->value);
         free(q->head);
         q->head = tmp;
     }
