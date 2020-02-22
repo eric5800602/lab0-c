@@ -1,7 +1,9 @@
 CC = gcc
-CFLAGS = -O1 -g -Wall -Werror
+CFLAGS = -O1 -g -Wall -Werror -Idudect -I.
 
 GIT_HOOKS := .git/hooks/applied
+DUT_DIR := dudect
+NAT_DIR := natsort
 all: $(GIT_HOOKS) qtest
 NAT_DIR := natsort
 # Control the build verbosity
@@ -24,12 +26,14 @@ $(GIT_HOOKS):
 	@scripts/install-git-hooks
 	@echo
 
-OBJS := qtest.o report.o console.o harness.o queue.o natsort/strnatcmp.o
+OBJS := qtest.o report.o console.o harness.o queue.o \
+        random.o dudect/constant.o dudect/fixture.o dudect/ttest.o \
+		natsort/strnatcmp.o
 deps := $(OBJS:%.o=.%.o.d)
 
 qtest: $(OBJS)
 	$(VECHO) "  LD\t$@\n"
-	$(Q)$(CC) $(LDFLAGS)  -o $@ $^
+	$(Q)$(CC) $(LDFLAGS) -o $@ $^ -lm
 
 %.o: %.c
 	@mkdir -p .$(DUT_DIR) .$(NAT_DIR)
