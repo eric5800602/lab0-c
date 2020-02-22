@@ -141,6 +141,8 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     if (q == NULL || q->size == 0) {
         return false;
     }
+    /* If sp is non-NULL and an element is removed, copy the removed string to
+     * *sp. */
     /* If sp is non-NULL and an element is removed,
        copy the removed string to *sp. */
     if (sp != NULL && q->head->value) {
@@ -220,6 +222,7 @@ void q_sort(queue_t *q)
         return;
     }
     q->head = mergeSortList(q->head);
+    /* Check the tail of queue. */
     list_ele_t *tail = q->head;
     while (tail->next) {
         tail = tail->next;
@@ -250,6 +253,7 @@ list_ele_t *mergeSortList(list_ele_t *head)
     // merge sorted l1 and sorted l2
     return merge(l1, l2);
 }
+
 list_ele_t *merge(list_ele_t *l1, list_ele_t *l2)
 {
     /* Using merge with pseudo node will cause following error
