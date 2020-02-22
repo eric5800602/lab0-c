@@ -3,7 +3,7 @@ CFLAGS = -O1 -g -Wall -Werror
 
 GIT_HOOKS := .git/hooks/applied
 all: $(GIT_HOOKS) qtest
-
+NAT_DIR := natsort
 # Control the build verbosity
 ifeq ("$(VERBOSE)","1")
     Q :=
@@ -24,7 +24,7 @@ $(GIT_HOOKS):
 	@scripts/install-git-hooks
 	@echo
 
-OBJS := qtest.o report.o console.o harness.o queue.o
+OBJS := qtest.o report.o console.o harness.o queue.o natsort/strnatcmp.o
 deps := $(OBJS:%.o=.%.o.d)
 
 qtest: $(OBJS)
@@ -32,6 +32,7 @@ qtest: $(OBJS)
 	$(Q)$(CC) $(LDFLAGS)  -o $@ $^
 
 %.o: %.c
+	@mkdir -p .$(DUT_DIR) .$(NAT_DIR)
 	$(VECHO) "  CC\t$@\n"
 	$(Q)$(CC) -o $@ $(CFLAGS) -c -MMD -MF .$@.d $<
 
@@ -58,6 +59,7 @@ valgrind: valgrind_existence
 
 clean:
 	rm -f $(OBJS) $(deps) *~ qtest /tmp/qtest.*
+	rm -rf .$(DUT_DIR) .$(NAT_DIR)
 	rm -rf *.dSYM
 	(cd traces; rm -f *~)
 

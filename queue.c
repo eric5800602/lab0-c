@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "harness.h"
+#include "natsort/strnatcmp.h"
 #include "queue.h"
 
 /*
@@ -140,8 +141,8 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     if (q == NULL || q->size == 0) {
         return false;
     }
-    /* If sp is non-NULL and an element is removed, copy the removed string to
-     * *sp. */
+    /* If sp is non-NULL and an element is removed,
+       copy the removed string to *sp. */
     if (sp != NULL && q->head->value) {
         memset(sp, '\0', bufsize);
         strncpy(sp, q->head->value, bufsize - 1);
@@ -211,15 +212,19 @@ void q_reverse(queue_t *q)
  * No effect if q is NULL or empty. In addition, if q has only one
  * element, do nothing.
  */
+
 void q_sort(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* TODO: Remove the above comment when you are about to implement. */
     // merge sort
     if (q == NULL || q->size == 1) {
         return;
     }
     q->head = mergeSortList(q->head);
+    list_ele_t *tail = q->head;
+    while (tail->next) {
+        tail = tail->next;
+    }
+    q->tail = tail;
 }
 list_ele_t *mergeSortList(list_ele_t *head)
 {
@@ -254,7 +259,7 @@ list_ele_t *merge(list_ele_t *l1, list_ele_t *l2)
     /* Declare pointer q as result for returning. */
     list_ele_t *temp = NULL, *q = NULL;
     /* Initial temp and q pointers for merge starting. */
-    if (strcasecmp(l1->value, l2->value) < 0) {
+    if (strnatcmp(l1->value, l2->value) < 0) {
         q = l1;
         temp = q;
         l1 = l1->next;
@@ -265,7 +270,7 @@ list_ele_t *merge(list_ele_t *l1, list_ele_t *l2)
     }
     /* Merge two list(l1 & l2) until the end of one. */
     while (l1 && l2) {
-        if (strcasecmp(l1->value, l2->value) < 0) {
+        if (strnatcmp(l1->value, l2->value) < 0) {
             temp->next = l1;
             temp = temp->next;
             l1 = l1->next;
