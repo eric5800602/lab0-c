@@ -30,10 +30,11 @@
  * negative chars in their default char type.
  */
 
+#include "strnatcmp.h"
 #include <ctype.h>
 #include <stddef.h> /* size_t */
-
-#include "strnatcmp.h"
+#include <stdio.h>
+#include <string.h>
 
 
 /* These are defined as macros to make it easier to adapt this code to
@@ -66,7 +67,7 @@ static int compare_right(nat_char const *a, nat_char const *b)
    remember it in BIAS. */
     for (;; a++, b++) {
         if (!nat_isdigit(*a) && !nat_isdigit(*b))
-            return bias;
+            return 0;
         if (!nat_isdigit(*a))
             return -1;
         if (!nat_isdigit(*b))
@@ -114,23 +115,26 @@ static int strnatcmp0(nat_char const *a, nat_char const *b, int fold_case)
     ai = bi = 0;
     while (1) {
         /* skip over leading spaces or zeros */
-        while (nat_isspace(a[ai++]))
-            ;
+        while (nat_isspace(a[ai])) {
+            ai++;
+        }
 
-        while (nat_isspace(b[bi++]))
+        while (nat_isspace(b[bi])) {
+            bi++;
+        }
 
-            /* process run of digits */
-            if (nat_isdigit(a[ai]) && nat_isdigit(b[bi])) {
-                fractional = (a[ai] == '0' || b[bi] == '0');
+        /* process run of digits */
+        if (nat_isdigit(a[ai]) && nat_isdigit(b[bi])) {
+            fractional = (a[ai] == '0' || b[bi] == '0');
 
-                if (fractional) {
-                    if ((result = compare_left(a + ai, b + bi)) != 0)
-                        return result;
-                } else {
-                    if ((result = compare_right(a + ai, b + bi)) != 0)
-                        return result;
-                }
+            if (fractional) {
+                if ((result = compare_left(a + ai, b + bi)) != 0)
+                    return result;
+            } else {
+                if ((result = compare_right(a + ai, b + bi)) != 0)
+                    return result;
             }
+        }
 
         if (!b[bi] && !a[ai]) {
             /* The strings compare the same.  Perhaps the caller

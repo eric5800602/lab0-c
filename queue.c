@@ -36,7 +36,7 @@ void q_free(queue_t *q)
     /* Free all elements in queue. */
     while (q->head != NULL) {
         list_ele_t *tmp = q->head->next;
-        free(q->head->value);
+        // free(q->head->value);
         free(q->head);
         q->head = tmp;
     }
@@ -218,7 +218,7 @@ void q_reverse(queue_t *q)
 void q_sort(queue_t *q)
 {
     // merge sort
-    if (q == NULL || q->size == 1) {
+    if (q == NULL || q->size == 1 || q->size == 0) {
         return;
     }
     q->head = mergeSortList(q->head);
