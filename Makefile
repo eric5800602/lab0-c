@@ -4,7 +4,7 @@ CFLAGS = -O1 -g -Wall -Werror -Idudect -I.
 GIT_HOOKS := .git/hooks/applied
 DUT_DIR := dudect
 all: $(GIT_HOOKS) qtest
-
+NAT_DIR := natsort
 # Control the build verbosity
 ifeq ("$(VERBOSE)","1")
     Q :=
@@ -26,7 +26,8 @@ $(GIT_HOOKS):
 	@echo
 
 OBJS := qtest.o report.o console.o harness.o queue.o \
-        random.o dudect/constant.o dudect/fixture.o dudect/ttest.o
+        random.o dudect/constant.o dudect/fixture.o dudect/ttest.o \
+		natsort/strnatcmp.o
 deps := $(OBJS:%.o=.%.o.d)
 
 qtest: $(OBJS)
@@ -34,7 +35,7 @@ qtest: $(OBJS)
 	$(Q)$(CC) $(LDFLAGS) -o $@ $^ -lm
 
 %.o: %.c
-	@mkdir -p .$(DUT_DIR)
+	@mkdir -p .$(DUT_DIR) .$(NAT_DIR)
 	$(VECHO) "  CC\t$@\n"
 	$(Q)$(CC) -o $@ $(CFLAGS) -c -MMD -MF .$@.d $<
 
@@ -61,7 +62,7 @@ valgrind: valgrind_existence
 
 clean:
 	rm -f $(OBJS) $(deps) *~ qtest /tmp/qtest.*
-	rm -rf .$(DUT_DIR)
+	rm -rf .$(DUT_DIR) .$(NAT_DIR)
 	rm -rf *.dSYM
 	(cd traces; rm -f *~)
 
