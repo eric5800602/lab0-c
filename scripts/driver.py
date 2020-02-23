@@ -59,16 +59,11 @@ class Tracer:
 
     maxScores = [0, 6, 6, 6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5]
 
-    RED = '\033[91m'
-    GREEN = '\033[92m'
-    WHITE = '\033[0m'
-
     def __init__(self,
                  qtest="",
                  verbLevel=0,
                  autograde=False,
-                 useValgrind=False,
-                 colored=False):
+                 useValgrind=False):
         if qtest != "":
             self.qtest = qtest
         self.verbLevel = verbLevel
@@ -159,7 +154,6 @@ def run(name, args):
     levelFixed = False
     autograde = False
     useValgrind = False
-    colored = False
 
     optlist, args = getopt.getopt(args, 'hp:t:v:A:c', ['valgrind'])
     for (opt, val) in optlist:
@@ -186,8 +180,7 @@ def run(name, args):
     t = Tracer(qtest=prog,
                verbLevel=vlevel,
                autograde=autograde,
-               useValgrind=useValgrind,
-               colored=colored)
+               useValgrind=useValgrind)
     t.run(tid)
 
 
