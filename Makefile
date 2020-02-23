@@ -5,10 +5,6 @@ GIT_HOOKS := .git/hooks/applied
 DUT_DIR := dudect
 NAT_DIR := natsort
 all: $(GIT_HOOKS) qtest
-<<<<<<< HEAD
-=======
-NAT_DIR := natsort
->>>>>>> 73bcb915243c8a6cac293ea5d714b95b45629060
 # Control the build verbosity
 ifeq ("$(VERBOSE)","1")
     Q :=
