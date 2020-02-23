@@ -6,6 +6,7 @@ import sys
 import getopt
 
 
+
 # Driver program for C programming exercise
 class Tracer:
 
@@ -59,11 +60,16 @@ class Tracer:
 
     maxScores = [0, 6, 6, 6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5]
 
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    WHITE = '\033[0m'
+
     def __init__(self,
                  qtest="",
                  verbLevel=0,
                  autograde=False,
-                 useValgrind=False):
+                 useValgrind=False,
+                 colored=False):
         if qtest != "":
             self.qtest = qtest
         self.verbLevel = verbLevel
@@ -82,7 +88,7 @@ class Tracer:
             return False
         fname = "%s/%s.cmd" % (self.traceDirectory, self.traceDict[tid])
         vname = "%d" % self.verbLevel
-        clist = [self.command, self.qtest, "-v", vname, "-f", fname]
+        clist = [self.command, "-v", vname, "-f", fname]
         try:
             retcode = subprocess.call(clist)
         except Exception as e:
@@ -103,7 +109,7 @@ class Tracer:
         score = 0
         maxscore = 0
         if self.useValgrind:
-            self.command = 'valgrind'
+            self.command = 'valgrind ' + self.qtest
         else:
             self.command = self.qtest
         for t in tidList:
@@ -154,6 +160,7 @@ def run(name, args):
     levelFixed = False
     autograde = False
     useValgrind = False
+    colored = False
 
     optlist, args = getopt.getopt(args, 'hp:t:v:A:c', ['valgrind'])
     for (opt, val) in optlist:
@@ -180,7 +187,8 @@ def run(name, args):
     t = Tracer(qtest=prog,
                verbLevel=vlevel,
                autograde=autograde,
-               useValgrind=useValgrind)
+               useValgrind=useValgrind,
+               colored=colored)
     t.run(tid)
 
 
