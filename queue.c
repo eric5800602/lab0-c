@@ -14,7 +14,7 @@ queue_t *q_new()
 {
     queue_t *q = malloc(sizeof(queue_t));
     /* Return NULL if malloc return NULL. */
-    if (q == NULL) {
+    if (!q) {
         return NULL;
     }
     memset(q, 0, sizeof(queue_t));
@@ -30,11 +30,11 @@ void q_free(queue_t *q)
 {
     /* Free queue structure */
     /* Check whether q is NULL. */
-    if (q == NULL) {
+    if (!q) {
         return;
     }
     /* Free all elements in queue. */
-    while (q->head != NULL) {
+    while (q->head) {
         list_ele_t *tmp = q->head->next;
         free(q->head->value);
         free(q->head);
@@ -54,19 +54,19 @@ void q_free(queue_t *q)
 bool q_insert_head(queue_t *q, char *s)
 {
     /* Check whether q is NULL. */
-    if (q == NULL) {
+    if (!q) {
         return false;
     }
     list_ele_t *newh;
     newh = malloc(sizeof(list_ele_t));
     /* Return NULL if malloc return NULL. */
-    if (newh == NULL) {
+    if (!newh) {
         return false;
     }
     /* Allocate space for the string. */
     newh->value = malloc((strlen(s) + 1) * sizeof(char));
     /* Return NULL if malloc return NULL. */
-    if (newh->value == NULL) {
+    if (!newh->value) {
         free(newh);
         return false;
     }
@@ -76,7 +76,7 @@ bool q_insert_head(queue_t *q, char *s)
     newh->next = q->head;
     q->head = newh;
     /* If the tail in queue is NULL, assign newh to it. */
-    if (q->tail == NULL) {
+    if (!q->tail) {
         q->tail = newh;
     }
     /* The size of queue plus one. */
@@ -94,19 +94,19 @@ bool q_insert_head(queue_t *q, char *s)
 bool q_insert_tail(queue_t *q, char *s)
 {
     /* Check whether q is NULL. */
-    if (q == NULL) {
+    if (!q) {
         return false;
     }
     list_ele_t *newt;
     newt = malloc(sizeof(list_ele_t));
     /* Return NULL if malloc return NULL. */
-    if (newt == NULL) {
+    if (!newt) {
         return false;
     }
     /* Allocate space for the string. */
     newt->value = malloc(sizeof(char) * (strlen(s) + 1));
     /* Return NULL if malloc return NULL. */
-    if (newt->value == NULL) {
+    if (!newt->value) {
         free(newt);
         return false;
     }
@@ -114,12 +114,12 @@ bool q_insert_tail(queue_t *q, char *s)
     memset(newt->value, 0, sizeof(char) * (strlen(s) + 1));
     strncpy(newt->value, s, strlen(s));
     newt->next = NULL;
-    if (q->tail != NULL) {
+    if (q->tail) {
         q->tail->next = newt;
     }
     q->tail = newt;
     /* If the head in queue is NULL, assign newt to it. */
-    if (q->head == NULL) {
+    if (!q->head) {
         q->head = newt;
     }
     /* The size of queue plus one. */
@@ -138,7 +138,7 @@ bool q_insert_tail(queue_t *q, char *s)
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
     /* Return false if queue is NULL or empty. */
-    if (q == NULL || q->size == 0) {
+    if (!q || !q->size) {
         return false;
     }
     /* If sp is non-NULL and an element is removed, copy the removed string to
@@ -166,9 +166,8 @@ int q_size(queue_t *q)
 {
     if (q && q->size) {
         return q->size;
-    } else {
-        return 0;
     }
+    return 0;
 }
 
 /*
@@ -181,7 +180,7 @@ int q_size(queue_t *q)
 void q_reverse(queue_t *q)
 {
     /* Return if queue is NULL or empty. */
-    if (q == NULL || q->size == 0 || q->size == 1) {
+    if (!q || q->size == 0 || q->size == 1) {
         return;
     }
     /* Declare back & front pointer for reversing. */
@@ -195,7 +194,7 @@ void q_reverse(queue_t *q)
     front = q->head->next;
     /* Clear the next of tail to NULL*/
     q->tail->next = NULL;
-    while (front != NULL) {
+    while (front) {
         /* Change the next pointer of current head to previous. */
         q->head->next = back;
         /* Repeat recording back & front pointer and move the head of q to the
@@ -218,7 +217,7 @@ void q_reverse(queue_t *q)
 void q_sort(queue_t *q)
 {
     // merge sort
-    if (q == NULL || q->size == 1 || q->size == 0) {
+    if (!q || q->size == 1 || q->size == 0) {
         return;
     }
     q->head = mergeSortList(q->head);
